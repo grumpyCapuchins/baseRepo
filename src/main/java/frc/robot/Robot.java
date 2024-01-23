@@ -6,10 +6,11 @@ package frc.robot;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PWM;
+//import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.PWMMotorController;
+//import edu.wpi.first.wpilibj.motorcontrol.PWMMotorController;
 //import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 
@@ -34,13 +35,14 @@ public class Robot extends TimedRobot {
       new DifferentialDrive(m_backLeftMotor::set, m_backRightMotor::set);
   
   //make an xbox controller
-  private final Joystick m_stick = new Joystick(0);
+  private XboxController m_Controller;
+  //private final Joystick m_stick = new Joystick(0);
 
   public Robot() {
     SendableRegistry.addChild(m_robotDrive, m_frontLeftMotor);
-    SendableRegistry.addChild(m_robotDrive, m_frontRightMotor);
+    SendableRegistry.addChild(m_robotDrive2, m_frontRightMotor);
 
-    SendableRegistry.addChild(m_robotDrive2, m_backLeftMotor);
+    SendableRegistry.addChild(m_robotDrive, m_backLeftMotor);
     SendableRegistry.addChild(m_robotDrive2, m_backRightMotor);
   }
 
@@ -50,6 +52,7 @@ public class Robot extends TimedRobot {
     // result in both sides moving forward. Depending on how your robot's
     // gearbox is constructed, you might have to invert the left side instead.
     m_frontRightMotor.setInverted(true);
+    m_backRightMotor.setInverted(true);
   }
 
   @Override
@@ -59,7 +62,8 @@ public class Robot extends TimedRobot {
     // and backward, and the X turns left and right.
     
     //allow to use xbox controller
-    m_robotDrive.arcadeDrive(-m_stick.getY(), -m_stick.getX());
+    m_robotDrive.arcadeDrive(-m_Controller.getLeftY(), -m_Controller.getLeftX());
+    m_robotDrive2.arcadeDrive(-m_Controller.getRightY(), -m_Controller.getRightX());
     //m_robotDrive2.arcadeDrive(, kDefaultPeriod);
   }
 }
