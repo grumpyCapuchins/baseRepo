@@ -5,12 +5,12 @@
 package frc.robot;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.wpilibj.Joystick;
-//import edu.wpi.first.wpilibj.PWM;
+//import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-//import edu.wpi.first.wpilibj.motorcontrol.PWMMotorController;
+import edu.wpi.first.wpilibj.motorcontrol.PWMMotorController;
 //import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 
@@ -20,18 +20,17 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
  * arcade steering.
  */
 public class Robot extends TimedRobot {
-  private final PWMSparkMax m_frontLeftMotor = new PWMSparkMax(0);
-  private final PWMSparkMax m_backLeftMotor = new PWMSparkMax(1);
-  private final PWMSparkMax m_frontRightMotor = new PWMSparkMax(2);
-  private final PWMSparkMax m_backRightMotor = new PWMSparkMax(3);
+  private final PWMMotorController m_frontLeftMotor = new PWMSparkMax(0);
+  private final PWMMotorController m_backLeftMotor = new PWMSparkMax(1);
+  private final PWMMotorController m_frontRightMotor = new PWMSparkMax(2);
+  private final PWMMotorController m_backRightMotor = new PWMSparkMax(3);
 
-  //m_frontLeftMotor.addFollower(m_backLeftMotor); 
-  //m_frontRightMotor.addFollower(m_backRigthMotor);
+  //m_frontLeftMotor.addFollower(m_backLeftMotor);
   
-  private final DifferentialDrive m_robotDrive =
+  private final DifferentialDrive m_robotDriveLeft =
       new DifferentialDrive(m_frontLeftMotor::set, m_frontRightMotor::set);
 
-  private final DifferentialDrive m_robotDrive2 = 
+  private final DifferentialDrive m_robotDriveRight = 
       new DifferentialDrive(m_backLeftMotor::set, m_backRightMotor::set);
   
   //make an xbox controller
@@ -39,11 +38,11 @@ public class Robot extends TimedRobot {
   //private final Joystick m_stick = new Joystick(0);
 
   public Robot() {
-    SendableRegistry.addChild(m_robotDrive, m_frontLeftMotor);
-    SendableRegistry.addChild(m_robotDrive2, m_frontRightMotor);
+    SendableRegistry.addChild(m_robotDriveLeft, m_frontLeftMotor);
+    SendableRegistry.addChild(m_robotDriveRight, m_frontRightMotor);
 
-    SendableRegistry.addChild(m_robotDrive, m_backLeftMotor);
-    SendableRegistry.addChild(m_robotDrive2, m_backRightMotor);
+    SendableRegistry.addChild(m_robotDriveLeft, m_backLeftMotor);
+    SendableRegistry.addChild(m_robotDriveRight, m_backRightMotor);
   }
 
   @Override
@@ -62,8 +61,8 @@ public class Robot extends TimedRobot {
     // and backward, and the X turns left and right.
     
     //allow to use xbox controller
-    m_robotDrive.arcadeDrive(-m_Controller.getLeftY(), -m_Controller.getLeftX());
-    m_robotDrive2.arcadeDrive(-m_Controller.getRightY(), -m_Controller.getRightX());
+    m_robotDriveLeft.arcadeDrive(-m_Controller.getLeftY(), -m_Controller.getLeftX());
+    m_robotDriveRight.arcadeDrive(-m_Controller.getRightY(), -m_Controller.getRightX());
     //m_robotDrive2.arcadeDrive(, kDefaultPeriod);
   }
 }
