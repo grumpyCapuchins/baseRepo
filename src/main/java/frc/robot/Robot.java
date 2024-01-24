@@ -6,7 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
 //import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PWM;
+//import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -20,18 +20,18 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
  * arcade steering.
  */
 public class Robot extends TimedRobot {
-  private final PWMMotorController m_frontLeftMotor = new PWMSparkMax(0);
-  private final PWMMotorController m_backLeftMotor = new PWMSparkMax(1);
-  private final PWMMotorController m_frontRightMotor = new PWMSparkMax(2);
-  private final PWMMotorController m_backRightMotor = new PWMSparkMax(3);
+  private final PWMMotorController m_frontLeftMotor = new PWMSparkMax(1);
+  private final PWMMotorController m_backLeftMotor = new PWMSparkMax(2);
+  private final PWMMotorController m_frontRightMotor = new PWMSparkMax(4);
+  private final PWMMotorController m_backRightMotor = new PWMSparkMax(0);
 
   //m_frontLeftMotor.addFollower(m_backLeftMotor);
   
   private final DifferentialDrive m_robotDriveLeft =
-      new DifferentialDrive(m_frontLeftMotor::set, m_frontRightMotor::set);
+      new DifferentialDrive(m_frontLeftMotor::set, m_backLeftMotor::set);
 
   private final DifferentialDrive m_robotDriveRight = 
-      new DifferentialDrive(m_backLeftMotor::set, m_backRightMotor::set);
+      new DifferentialDrive(m_frontRightMotor::set, m_backRightMotor::set);
   
   //make an xbox controller
   private XboxController m_Controller;
@@ -59,10 +59,11 @@ public class Robot extends TimedRobot {
     // Drive with arcade drive.
     // That means that the Y axis drives forward
     // and backward, and the X turns left and right.
-    
-    //allow to use xbox controller
-    m_robotDriveLeft.arcadeDrive(-m_Controller.getLeftY(), -m_Controller.getLeftX());
-    m_robotDriveRight.arcadeDrive(-m_Controller.getRightY(), -m_Controller.getRightX());
+    m_Controller = new XboxController(0);
+    m_Controller = new XboxController(0);
+    //nullpointerexception
+    m_robotDriveLeft.arcadeDrive(m_Controller.getLeftY(), m_Controller.getLeftY());
+    m_robotDriveRight.arcadeDrive(m_Controller.getRightY(), m_Controller.getRightY());
     //m_robotDrive2.arcadeDrive(, kDefaultPeriod);
   }
 }
