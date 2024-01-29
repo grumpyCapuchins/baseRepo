@@ -10,20 +10,22 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.PWMMotorController;
+//import edu.wpi.first.wpilibj.motorcontrol.PWMMotorController;
 //import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+//import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 /**
  * This is a demo program showing the use of the DifferentialDrive class. Runs the motors with
  * arcade steering.
  */
 public class Robot extends TimedRobot {
-  private final PWMMotorController m_frontLeftMotor = new PWMSparkMax(1);
-  private final PWMMotorController m_backLeftMotor = new PWMSparkMax(2);
-  private final PWMMotorController m_frontRightMotor = new PWMSparkMax(4);
-  private final PWMMotorController m_backRightMotor = new PWMSparkMax(0);
+  private final CANSparkMax m_frontLeftMotor = new CANSparkMax(1, MotorType.kBrushed);
+  private final CANSparkMax m_backLeftMotor = new CANSparkMax(2, MotorType.kBrushed);
+  private final CANSparkMax m_frontRightMotor = new CANSparkMax(4, MotorType.kBrushed);
+  private final CANSparkMax m_backRightMotor = new CANSparkMax(3, MotorType.kBrushed);
 
   //m_frontLeftMotor.addFollower(m_backLeftMotor);
   
@@ -60,10 +62,10 @@ public class Robot extends TimedRobot {
     // That means that the Y axis drives forward
     // and backward, and the X turns left and right.
     m_Controller = new XboxController(0);
-    m_Controller = new XboxController(0);
+    //m_Controller = new XboxController(0);
     //nullpointerexception
     m_robotDriveLeft.arcadeDrive(m_Controller.getLeftY(), m_Controller.getLeftY());
-    m_robotDriveRight.arcadeDrive(m_Controller.getRightY(), m_Controller.getRightY());
+    m_robotDriveRight.arcadeDrive(m_Controller.getRightY(), -m_Controller.getRightY());
     //m_robotDrive2.arcadeDrive(, kDefaultPeriod);
   }
 }
