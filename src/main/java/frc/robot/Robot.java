@@ -52,8 +52,9 @@ public class Robot extends TimedRobot {
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
     // gearbox is constructed, you might have to invert the left side instead.
-    m_frontRightMotor.setInverted(true);
-    m_backRightMotor.setInverted(true);
+    //m_frontRightMotor.setInverted(true);
+    //m_frontLeftMotor.setInverted(true);
+    //m_backRightMotor.setInverted(true);
   }
 
   @Override
@@ -64,8 +65,8 @@ public class Robot extends TimedRobot {
     m_Controller = new XboxController(0);
     //m_Controller = new XboxController(0);
     //nullpointerexception
-    m_robotDriveLeft.arcadeDrive(m_Controller.getLeftY(), m_Controller.getLeftY());
-    m_robotDriveRight.arcadeDrive(m_Controller.getRightY(), -m_Controller.getRightY());
+    m_robotDriveLeft.arcadeDrive(m_Controller.getLeftY()/1.5, m_Controller.getLeftY()/1.5);
+    m_robotDriveRight.arcadeDrive(m_Controller.getRightY()/1.5, -m_Controller.getRightY()/1.5);
     //m_robotDrive2.arcadeDrive(, kDefaultPeriod);
   }
 }
