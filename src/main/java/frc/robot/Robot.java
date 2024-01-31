@@ -71,8 +71,5 @@ public class Robot extends TimedRobot {
     m_robotDriveLeft.arcadeDrive(m_Controller.getLeftY()/1.5, m_Controller.getLeftY()/1.5);
     m_robotDriveRight.arcadeDrive(m_Controller.getRightY()/1.5, -m_Controller.getRightY()/1.5);
     //m_robotDrive2.arcadeDrive(, kDefaultPeriod);
-
-    //Hello World
-    //Hello Justy Wusty
   }
 }
