@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.cameraserver.CameraServer;
+
 /**
  * This is a demo program showing the use of the DifferentialDrive class. Runs the motors with
  * arcade steering.
@@ -55,6 +57,7 @@ public class Robot extends TimedRobot {
     //m_frontRightMotor.setInverted(true);
     //m_frontLeftMotor.setInverted(true);
     //m_backRightMotor.setInverted(true);
+    CameraServer.startAutomaticCapture();
   }
 
   @Override
