@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 //import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 //import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 
+import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -24,18 +25,19 @@ import edu.wpi.first.cameraserver.CameraServer;
  * arcade steering.
  */
 public class Robot extends TimedRobot {
-  private final CANSparkMax m_frontLeftMotor = new CANSparkMax(1, MotorType.kBrushed);
+  private final CANSparkBase m_frontLeftMotor = new CANSparkMax(1, MotorType.kBrushed);
   private final CANSparkMax m_backLeftMotor = new CANSparkMax(2, MotorType.kBrushed);
-  private final CANSparkMax m_frontRightMotor = new CANSparkMax(4, MotorType.kBrushed);
+  private final CANSparkBase m_frontRightMotor = new CANSparkMax(4, MotorType.kBrushed);
   private final CANSparkMax m_backRightMotor = new CANSparkMax(3, MotorType.kBrushed);
 
   //m_frontLeftMotor.addFollower(m_backLeftMotor);
   
-  private final DifferentialDrive m_robotDriveLeft =
-      new DifferentialDrive(m_frontLeftMotor::set, m_backLeftMotor::set);
+  private final DifferentialDrive m_robotDriveLeft = new DifferentialDrive(m_frontLeftMotor::set, m_frontRightMotor::set);
 
-  private final DifferentialDrive m_robotDriveRight = 
+
+  /*private final DifferentialDrive m_robotDriveRight = 
       new DifferentialDrive(m_frontRightMotor::set, m_backRightMotor::set);
+      */
   
   //make an xbox controller
   private XboxController m_Controller;
@@ -43,10 +45,10 @@ public class Robot extends TimedRobot {
 
   public Robot() {
     SendableRegistry.addChild(m_robotDriveLeft, m_frontLeftMotor);
-    SendableRegistry.addChild(m_robotDriveRight, m_frontRightMotor);
+    //SendableRegistry.addChild(m_robotDriveRight, m_frontRightMotor);
 
-    SendableRegistry.addChild(m_robotDriveLeft, m_backLeftMotor);
-    SendableRegistry.addChild(m_robotDriveRight, m_backRightMotor);
+    SendableRegistry.addChild(m_robotDriveLeft, m_frontRightMotor);
+    //SendableRegistry.addChild(m_robotDriveRight, m_backRightMotor);
   }
 
   @Override
@@ -57,6 +59,9 @@ public class Robot extends TimedRobot {
     //m_frontRightMotor.setInverted(true);
     //m_frontLeftMotor.setInverted(true);
     //m_backRightMotor.setInverted(true);
+    m_backLeftMotor.follow(m_frontLeftMotor);
+    m_backRightMotor.follow(m_frontRightMotor);
+
     CameraServer.startAutomaticCapture();
   }
 
@@ -68,8 +73,8 @@ public class Robot extends TimedRobot {
     m_Controller = new XboxController(0);
     //m_Controller = new XboxController(0);
     //nullpointerexception
-    m_robotDriveLeft.arcadeDrive(m_Controller.getLeftY()/1.5, m_Controller.getLeftY()/1.5);
-    m_robotDriveRight.arcadeDrive(m_Controller.getRightY()/1.5, -m_Controller.getRightY()/1.5);
+    m_robotDriveLeft.arcadeDrive(m_Controller.getLeftY()/1, m_Controller.getRightX()/1);
+    //m_robotDriveRight.arcadeDrive(m_Controller.getRightY()/1.4, m_Controller.getRightY()/1.4);
     //m_robotDrive2.arcadeDrive(, kDefaultPeriod);
   }
 }
