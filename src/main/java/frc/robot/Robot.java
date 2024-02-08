@@ -5,7 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
-//import edu.wpi.first.wpilibj.Joystick;
 //import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
@@ -25,30 +24,22 @@ import edu.wpi.first.cameraserver.CameraServer;
  * arcade steering.
  */
 public class Robot extends TimedRobot {
+  //Constructs and initializes spark max objects
   private final CANSparkBase m_frontLeftMotor = new CANSparkMax(1, MotorType.kBrushed);
   private final CANSparkMax m_backLeftMotor = new CANSparkMax(2, MotorType.kBrushed);
   private final CANSparkBase m_frontRightMotor = new CANSparkMax(4, MotorType.kBrushed);
   private final CANSparkMax m_backRightMotor = new CANSparkMax(3, MotorType.kBrushed);
-
-  //m_frontLeftMotor.addFollower(m_backLeftMotor);
   
+  //constructs and initializes a differential drive object
   private final DifferentialDrive m_robotDriveLeft = new DifferentialDrive(m_frontLeftMotor::set, m_frontRightMotor::set);
-
-
-  /*private final DifferentialDrive m_robotDriveRight = 
-      new DifferentialDrive(m_frontRightMotor::set, m_backRightMotor::set);
-      */
   
-  //make an xbox controller
+  //constructs an xbox controller object
   private XboxController m_Controller;
-  //private final Joystick m_stick = new Joystick(0);
 
   public Robot() {
+    //adds child to sendable Registry (Whatever that means)
     SendableRegistry.addChild(m_robotDriveLeft, m_frontLeftMotor);
-    //SendableRegistry.addChild(m_robotDriveRight, m_frontRightMotor);
-
     SendableRegistry.addChild(m_robotDriveLeft, m_frontRightMotor);
-    //SendableRegistry.addChild(m_robotDriveRight, m_backRightMotor);
   }
 
   @Override
@@ -56,25 +47,23 @@ public class Robot extends TimedRobot {
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
     // gearbox is constructed, you might have to invert the left side instead.
-    //m_frontRightMotor.setInverted(true);
-    //m_frontLeftMotor.setInverted(true);
-    //m_backRightMotor.setInverted(true);
     m_backLeftMotor.follow(m_frontLeftMotor);
     m_backRightMotor.follow(m_frontRightMotor);
-
+    m_frontRightMotor.setInverted(true);
     CameraServer.startAutomaticCapture();
   }
 
+  @Override
+  public void autonomousPeriodic() {
+    
+  }
+  
   @Override
   public void teleopPeriodic() {
     // Drive with arcade drive.
     // That means that the Y axis drives forward
     // and backward, and the X turns left and right.
     m_Controller = new XboxController(0);
-    //m_Controller = new XboxController(0);
-    //nullpointerexception
     m_robotDriveLeft.arcadeDrive(m_Controller.getLeftY()/1, m_Controller.getRightX()/1);
-    //m_robotDriveRight.arcadeDrive(m_Controller.getRightY()/1.4, m_Controller.getRightY()/1.4);
-    //m_robotDrive2.arcadeDrive(, kDefaultPeriod);
   }
 }
