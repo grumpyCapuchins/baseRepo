@@ -98,9 +98,11 @@ public class Robot extends TimedRobot {
     //initializes Controller Object
     m_Controller = new XboxController(0);
 
-    // Drive with arcade drive.
-    // That means that the Y axis drives forward
-    // and backward, and the X turns left and right.
+    /*
+    Drive with arcade drive.
+    That means that the Y axis drives forward
+    and backward, and the X turns left and right.
+    */
     m_robotDrive.arcadeDrive(m_Controller.getLeftY()/1, m_Controller.getRightX()/1);
   }
 }
