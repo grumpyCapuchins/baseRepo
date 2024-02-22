@@ -35,7 +35,8 @@ public class Robot extends TimedRobot {
   private final Timer m_Timer = new Timer();
   
   //constructs and initializes a differential drive object
-  private final DifferentialDrive m_robotDrive = new DifferentialDrive(m_frontLeftMotor::set, m_frontRightMotor::set);
+  private final DifferentialDrive m_robotDrive 
+    = new DifferentialDrive(m_frontLeftMotor::set, m_frontRightMotor::set);
   
   //constructs an xbox controller object
   private XboxController m_Controller;
@@ -83,7 +84,7 @@ public class Robot extends TimedRobot {
     // if statment to show how long robot should run for 2 seconds (timer loop)
     if (m_Timer.get() < 2.0) {
       // tankDrive command that allows robot to run at 0.5 speed on each side
-      m_robotDrive.tankDrive(0.5, 0.5);
+      m_robotDrive.tankDrive(-0.5, -0.555);
     } else {
       // stops robot
       m_robotDrive.stopMotor();
@@ -103,6 +104,6 @@ public class Robot extends TimedRobot {
     That means that the Y axis drives forward
     and backward, and the X turns left and right.
     */
-    m_robotDrive.arcadeDrive(m_Controller.getLeftY()/1, m_Controller.getRightX()/1);
+    m_robotDrive.arcadeDrive(m_Controller.getLeftY(), m_Controller.getRightX() + 0.055);
   }
 }
