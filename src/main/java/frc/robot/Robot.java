@@ -26,10 +26,10 @@ import edu.wpi.first.cameraserver.CameraServer;
  */
 public class Robot extends TimedRobot {
   //Constructs and initializes spark max objects
-  private final CANSparkBase m_frontLeftMotor = new CANSparkMax(1, MotorType.kBrushed);
-  private final CANSparkMax m_backLeftMotor = new CANSparkMax(2, MotorType.kBrushed);
-  private final CANSparkBase m_frontRightMotor = new CANSparkMax(4, MotorType.kBrushed);
-  private final CANSparkMax m_backRightMotor = new CANSparkMax(3, MotorType.kBrushed);
+  private final CANSparkBase m_frontLeftMotor = new CANSparkMax(2, MotorType.kBrushed);
+  private final CANSparkMax m_backLeftMotor = new CANSparkMax(1, MotorType.kBrushed);
+  private final CANSparkBase m_frontRightMotor = new CANSparkMax(3, MotorType.kBrushed);
+  private final CANSparkMax m_backRightMotor = new CANSparkMax(4, MotorType.kBrushed);
 
   //Constructs and initializes a Timer Object
   private final Timer m_Timer = new Timer();
@@ -61,6 +61,7 @@ public class Robot extends TimedRobot {
 
     // inverts Right side of robot
     m_frontRightMotor.setInverted(true);
+    m_backRightMotor.setInverted(true);
 
     // starts live view from robot webcam
     CameraServer.startAutomaticCapture();
@@ -104,6 +105,6 @@ public class Robot extends TimedRobot {
     That means that the Y axis drives forward
     and backward, and the X turns left and right.
     */
-    m_robotDrive.arcadeDrive(m_Controller.getLeftY(), m_Controller.getRightX() + 0.055);
+    m_robotDrive.tankDrive(m_Controller.getLeftY(), m_Controller.getRightX());
   }
 }
