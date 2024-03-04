@@ -105,6 +105,6 @@ public class Robot extends TimedRobot {
     That means that the Y axis drives forward
     and backward, and the X turns left and right.
     */
-    m_robotDrive.tankDrive(m_Controller.getLeftY(), m_Controller.getRightX());
+    m_robotDrive.arcadeDrive(m_Controller.getLeftY(), m_Controller.getRightX());
   }
 }
