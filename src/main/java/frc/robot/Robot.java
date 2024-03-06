@@ -31,6 +31,10 @@ public class Robot extends TimedRobot {
   private final CANSparkBase m_frontRightMotor = new CANSparkMax(3, MotorType.kBrushed);
   private final CANSparkMax m_backRightMotor = new CANSparkMax(4, MotorType.kBrushed);
 
+  //launching spark max objects
+  private final CANSparkBase m_topLaunchMotor = new CANSparkMax(6, MotorType.kBrushed);
+  private final CANSparkMax m_bottomLaunchMotor = new CANSparkMax(5, MotorType.kBrushed);
+
   //Constructs and initializes a Timer Object
   private final Timer m_Timer = new Timer();
   
@@ -38,6 +42,10 @@ public class Robot extends TimedRobot {
   private final DifferentialDrive m_robotDrive 
     = new DifferentialDrive(m_frontLeftMotor::set, m_frontRightMotor::set);
   
+  //constructs and initializes a differential drive object to launch
+  private final DifferentialDrive m_robotLaunch
+  = new DifferentialDrive (m_topLaunchMotor::set, m_bottomLaunchMotor::set);
+
   //constructs an xbox controller object
   private XboxController m_Controller;
 
@@ -48,6 +56,9 @@ public class Robot extends TimedRobot {
     //adds child to sendable Registry (Whatever that means)
     SendableRegistry.addChild(m_robotDrive, m_frontLeftMotor);
     SendableRegistry.addChild(m_robotDrive, m_frontRightMotor);
+
+    //
+    SendableRegistry.addChild(m_robotDrive, m_topLaunchMotor);
   }
 
   /**
@@ -58,6 +69,9 @@ public class Robot extends TimedRobot {
     // Followers (Replacment for motor controller groups)
     m_backLeftMotor.follow(m_frontLeftMotor);
     m_backRightMotor.follow(m_frontRightMotor);
+
+    // followers for Launching motors
+    m_bottomLaunchMotor.follow(m_topLaunchMotor);
 
     // inverts Right side of robot
     m_frontRightMotor.setInverted(true);
@@ -106,5 +120,36 @@ public class Robot extends TimedRobot {
     and backward, and the X turns left and right.
     */
     m_robotDrive.arcadeDrive(m_Controller.getLeftY(), m_Controller.getRightX());
+  
+    //Launching with Triggers
+    //if statement for RightTrigger Launch
+  if (m_Controller.getRightTriggerAxis() > 0.1)
+  {
+      m_robotLaunch.tankDrive(-0.5, -0.5);
   }
-}
+  //if statement for leftTrigger Reciever
+  if (m_Controller.getLeftTriggerAxis() > 0.1)
+  {
+    m_bottomLaunchMotor.setInverted(true);
+    m_topLaunchMotor.setInverted(true);
+
+      m_robotLaunch.tankDrive(-0.5, -0.5);
+  }
+    
+  
+  //Using Back Buttons to Launch
+  if (m_Controller.getLeftBumper())
+  {
+      m_robotLaunch.tankDrive(-0.5, -0.5);
+  }
+  //if statement for leftTrigger Reciever
+  if (m_Controller.getRightBumper())
+  {
+    m_bottomLaunchMotor.setInverted(true);
+    m_topLaunchMotor.setInverted(true);
+
+      m_robotLaunch.tankDrive(-0.5, -0.5);
+  }
+    }
+  
+  }
