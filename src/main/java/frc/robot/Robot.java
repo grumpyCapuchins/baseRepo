@@ -31,9 +31,9 @@ public class Robot extends TimedRobot {
   private final CANSparkBase m_frontRightMotor = new CANSparkMax(3, MotorType.kBrushed);
   private final CANSparkMax m_backRightMotor = new CANSparkMax(4, MotorType.kBrushed);
 
-  //launching spark max objects
-  private final CANSparkMax m_topLaunchMotor = new CANSparkMax(6, MotorType.kBrushed);
-  private final CANSparkMax m_bottomLaunchMotor = new CANSparkMax(5, MotorType.kBrushed);
+  //launcher spark max objects
+  private final CANSparkMax m_topLaunchMotor = new CANSparkMax(6, MotorType.kBrushless);
+  private final CANSparkMax m_bottomLaunchMotor = new CANSparkMax(5, MotorType.kBrushless);
 
   //Constructs and initializes a Timer Object
   private final Timer m_Timer = new Timer();
@@ -42,10 +42,6 @@ public class Robot extends TimedRobot {
   private final DifferentialDrive m_robotDrive 
     = new DifferentialDrive(m_frontLeftMotor::set, m_frontRightMotor::set);
   
-  //constructs and initializes a differential drive object to launch
-  private final DifferentialDrive m_robotLaunch
-    = new DifferentialDrive (m_topLaunchMotor::set, m_bottomLaunchMotor::set);
-
   //constructs an xbox controller object
   private XboxController m_Controller;
 
@@ -57,10 +53,6 @@ public class Robot extends TimedRobot {
     //adds child to sendable Registry (Whatever that means)
     SendableRegistry.addChild(m_robotDrive, m_frontLeftMotor);
     SendableRegistry.addChild(m_robotDrive, m_frontRightMotor);
-
-    //
-    SendableRegistry.addChild(m_robotLaunch, m_topLaunchMotor);
-    SendableRegistry.addChild(m_robotLaunch, m_bottomLaunchMotor);
   }
 
   /**
@@ -73,12 +65,12 @@ public class Robot extends TimedRobot {
     m_backLeftMotor.follow(m_frontLeftMotor);
     m_backRightMotor.follow(m_frontRightMotor);
 
-    // followers for Launching motors 
-    //m_bottomLaunchMotor.follow(m_topLaunchMotor);
-
     // inverts Right side of robot
     m_frontRightMotor.setInverted(true);
     m_backRightMotor.setInverted(true);
+
+    //initializes Controller Object
+    m_Controller = new XboxController(0);
 
     // starts live view from robot webcam
     CameraServer.startAutomaticCapture();
@@ -101,13 +93,26 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() 
   {
-    // if statment to show how long robot should run for 2 seconds (timer loop)
-    if (m_Timer.get() < 2.0) {
-      // tankDrive command that allows robot to run at 0.5 speed on each side
+    //if statment for auto top motor warm-up
+    if (m_Timer.get() <= 5.0) 
+    {
+      //sets top motor speed
+      m_topLaunchMotor.set(-1.0);
+    // Elif statment for auot bottom motor starting
+    } else if (m_Timer.get() > 5.0 && m_Timer.get() < 10.0) 
+    {
+      //sets bottom motor speed
+      m_bottomLaunchMotor.set(-1.0);
+    // ELif for auto back out
+    } else if (m_Timer.get() > 10.0 && m_Timer.get() < 14.0) 
+    {
+      //both motors reverse
       m_robotDrive.tankDrive(0.5, 0.5);
     } else {
-      // stops robot
+      // stops all autonomous operations
       m_robotDrive.stopMotor();
+      m_topLaunchMotor.stopMotor();
+      m_bottomLaunchMotor.stopMotor();
     }
   }
   
@@ -117,56 +122,49 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() 
   {
-    //initializes Controller Object
-    m_Controller = new XboxController(0);
-
     /*
     Drive with arcade drive.
     That means that the Y axis drives forward
     and backward, and the X turns left and right.
     */
-    m_robotDrive.arcadeDrive(m_Controller.getLeftY(), m_Controller.getRightX());
-  
+    if (m_Controller.getLeftY() > 0.0 || m_Controller.getRightX() > 0.0 || m_Controller.getLeftY() < 0.0 || m_Controller.getRightX() < 0.0)
+    {
+      m_robotDrive.arcadeDrive(m_Controller.getLeftY(), m_Controller.getRightX());
+    }
     /**
-     * Using right trigger to launch
-     * Using Left trigger to recieve
+     * B button for top motor warm-up
+     * right bumper for firing the note
+     * left bumper for intake
      */
     
-    if (m_Controller.getRightTriggerAxis() > 0.25 && m_Controller.getRightTriggerAxis() < 0.8)
+    //Prepares top motor for firing
+    if (m_Controller.getBButtonPressed() == true)
     {
-      m_topLaunchMotor.set(10.0);
+      m_topLaunchMotor.set(0.5);
+    } else if (m_Controller.getBButtonReleased() == true) 
+    {
+      m_topLaunchMotor.stopMotor();
     }
 
-     //if statement for RightTrigger Launch
-    if (m_Controller.getRightTriggerAxis() > 0.9)
+    //activate bottom motor for active firing
+    if (m_Controller.getRightBumperPressed() == true)
     {
-      m_topLaunchMotor.set(10.0);
-      m_bottomLaunchMotor.set(10.0);
-    } 
-
-    //if statement for leftTrigger Reciever
-    if (m_Controller.getLeftTriggerAxis() > 0.1)
+      m_bottomLaunchMotor.set(0.5);
+    } else if (m_Controller.getRightBumperReleased() == true) 
     {
-      m_bottomLaunchMotor.setInverted(true);
-      m_topLaunchMotor.setInverted(true);
-
-      m_robotLaunch.tankDrive(-10.0, -10.0);
+      m_bottomLaunchMotor.stopMotor();
     }
-      
-    /** 
-     * Using left Bumper to Launch
-     * Using right Bumper to Recieve
-    */
-    //if statement for left bumper
-    if (m_Controller.getLeftBumper()) m_robotLaunch.tankDrive(-0.5, -0.5);
-    //if statement for right bumper
-    if (m_Controller.getRightBumper())
-    {
-      m_bottomLaunchMotor.setInverted(true);
-      m_topLaunchMotor.setInverted(true);
 
-      m_robotLaunch.tankDrive(0.5, 0.5);
+    //if statement for Reciever
+    if (m_Controller.getLeftBumperPressed() == true)
+    {
+      m_topLaunchMotor.set(-0.5);
+      m_bottomLaunchMotor.set(-0.2);
+    } else if (m_Controller.getLeftBumperReleased() == true) 
+    {
+      m_topLaunchMotor.stopMotor();
+      m_bottomLaunchMotor.stopMotor();
     }
-   }
-    
+
   }
+}
