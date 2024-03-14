@@ -140,7 +140,7 @@ public class Robot extends TimedRobot {
     //Prepares top motor for firing
     if (m_Controller.getBButtonPressed() == true)
     {
-      m_topLaunchMotor.set(0.5);
+      m_topLaunchMotor.set(1.0);
     } else if (m_Controller.getBButtonReleased() == true) 
     {
       m_topLaunchMotor.stopMotor();
@@ -149,7 +149,7 @@ public class Robot extends TimedRobot {
     //activate bottom motor for active firing
     if (m_Controller.getRightBumperPressed() == true)
     {
-      m_bottomLaunchMotor.set(0.5);
+      m_bottomLaunchMotor.set(1.0);
     } else if (m_Controller.getRightBumperReleased() == true) 
     {
       m_bottomLaunchMotor.stopMotor();
